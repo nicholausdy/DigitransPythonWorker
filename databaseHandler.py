@@ -40,9 +40,9 @@ AND question_id = %s''', (questionnaireId, questionId))
   except Exception as error:
     print(error)
     raise Exception('Failed getting result')
-  finally:
-    if cur:
-      cur.close()
+  #finally:
+  #  if cur:
+  #    cur.close()
 
 def getFromQuestionTable(questionnaireId, questionId):
   try:
@@ -56,7 +56,7 @@ AND question_id = %s''', (questionnaireId, questionId))
   except Exception as error:
     print(error)
     raise Exception('Failed getting result')
-  finally:
-    if cur:
-      cur.close()
+  #finally:
+  #  if cur:
+  #    cur.close()
 

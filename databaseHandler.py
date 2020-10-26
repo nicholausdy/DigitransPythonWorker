@@ -16,7 +16,6 @@ def connect():
     print(error)
     raise Exception('Failed connecting to DB')
 
-conn = connect()
 
 def transformToListofDict(cursorResult):
   try:
@@ -30,6 +29,7 @@ def transformToListofDict(cursorResult):
 
 def getFromOptionsTable(questionnaireId, questionId):
   try:
+    conn = connect()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute('''select * from options where questionnaire_id = %s
 AND question_id = %s''', (questionnaireId, questionId))
@@ -40,12 +40,13 @@ AND question_id = %s''', (questionnaireId, questionId))
   except Exception as error:
     print(error)
     raise Exception('Failed getting result')
-  #finally:
-  #  if cur:
-  #    cur.close()
+  finally:
+    if cur:
+      cur.close()
 
 def getFromQuestionTable(questionnaireId, questionId):
   try:
+    conn = connect()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute('''select * from questions where questionnaire_id = %s
 AND question_id = %s''', (questionnaireId, questionId))
@@ -56,7 +57,7 @@ AND question_id = %s''', (questionnaireId, questionId))
   except Exception as error:
     print(error)
     raise Exception('Failed getting result')
-  #finally:
-  #  if cur:
-  #    cur.close()
+  finally:
+    if cur:
+      cur.close()
 

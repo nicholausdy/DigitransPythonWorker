@@ -42,7 +42,7 @@ def renderPie(chartInfoObject):
       width=100, 
       height=100, 
       legend_box_size=4, 
-      tooltip_box_radius=2,
+      tooltip_border_radius=2,
       style = custom_style)
     pie_chart.title = chartInfoObject['questionDesc']
     for i in range(len(chartInfoObject['optionInfo'])):

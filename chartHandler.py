@@ -40,7 +40,7 @@ def renderPie(chartInfoObject):
     )
     pie_chart = pygal.Pie(
       width=80, 
-      height=80, 
+      height=50, 
       margin_top=3,
       spacing = 5,
       legend_box_size=1, 

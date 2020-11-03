@@ -39,8 +39,8 @@ def renderPie(chartInfoObject):
       tooltip_font_size=2    #hover element
     )
     pie_chart = pygal.Pie(
-      width=100, 
-      height=100, 
+      width=80, 
+      height=80, 
       margin_top=3,
       spacing = 5,
       legend_box_size=1, 

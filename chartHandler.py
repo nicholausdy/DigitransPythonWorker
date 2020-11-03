@@ -1,4 +1,5 @@
 import pygal
+from pygal.style import Style
 import asyncio
 from asyncHandler import asyncTransform 
 
@@ -31,7 +32,14 @@ async def getChartInfo(questionnaireId, questionId):
 
 def renderPie(chartInfoObject):
   try:
-    pie_chart = pygal.Pie(width=200, height=200)
+    # styling
+    custom_style = Style(
+      title_font_size=14,
+      value_font_size=12,
+      value_label_font_size=10,
+      label_font_size=10
+    )
+    pie_chart = pygal.Pie(width=300, height=300, style = custom_style)
     pie_chart.title = chartInfoObject['questionDesc']
     for i in range(len(chartInfoObject['optionInfo'])):
       optionObj = chartInfoObject['optionInfo'][i]

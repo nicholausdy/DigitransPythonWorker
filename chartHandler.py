@@ -34,15 +34,16 @@ def renderPie(chartInfoObject):
   try:
     # styling
     custom_style = Style(
-      title_font_size=4,
-      legend_font_size=3,
-      tooltip_font_size=4    #hover element
+      title_font_size=3,
+      legend_font_size=2,
+      tooltip_font_size=3    #hover element
     )
     pie_chart = pygal.Pie(
-      width=150, 
-      height=150, 
-      legend_box_size=4, 
-      tooltip_border_radius=2,
+      width=125, 
+      height=125, 
+      margin=3,
+      legend_box_size=2, 
+      tooltip_border_radius=1,
       style = custom_style)
     pie_chart.title = chartInfoObject['questionDesc']
     for i in range(len(chartInfoObject['optionInfo'])):

@@ -31,7 +31,7 @@ async def getChartInfo(questionnaireId, questionId):
 
 def renderPie(chartInfoObject):
   try:
-    pie_chart = pygal.Pie(width=500, margin_top=50, margin_left=50)
+    pie_chart = pygal.Pie(width=200, height=200, margin_top=20, margin_left=20)
     pie_chart.title = chartInfoObject['questionDesc']
     for i in range(len(chartInfoObject['optionInfo'])):
       optionObj = chartInfoObject['optionInfo'][i]

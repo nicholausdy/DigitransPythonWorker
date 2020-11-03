@@ -34,7 +34,7 @@ def renderPie(chartInfoObject):
   try:
     # styling
     custom_style = Style(
-      title_font_size=3,
+      title_font_size=2,
       legend_font_size=2,
       tooltip_font_size=2    #hover element
     )

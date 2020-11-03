@@ -36,11 +36,11 @@ def renderPie(chartInfoObject):
     custom_style = Style(
       title_font_size=4,
       legend_font_size=3,
-      tooltip_font_size=3    #hover element
+      tooltip_font_size=4    #hover element
     )
     pie_chart = pygal.Pie(
-      width=200, 
-      height=200, 
+      width=150, 
+      height=150, 
       legend_box_size=4, 
       tooltip_border_radius=2,
       style = custom_style)

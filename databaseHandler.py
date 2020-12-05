@@ -1,5 +1,6 @@
 import psycopg2
 import psycopg2.extras
+from psycopg2_pool import ThreadSafeConnectionPool
 import os
 
 from pathlib import Path
@@ -8,13 +9,8 @@ from dotenv import load_dotenv
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-def connect():
-  try:
-    conn = psycopg2.connect(database=os.getenv("POSTGRES_DBNAME"), user=os.getenv("POSTGRES_USERNAME"), password=os.getenv("POSTGRES_PASSWORD"), host=os.getenv("POSTGRES_ADDRESS"), port=os.getenv("POSTGRES_PORT"))
-    return conn
-  except Exception as error:
-    print(error)
-    raise Exception('Failed connecting to DB')
+dsn = "dbname=" + os.getenv("POSTGRES_DBNAME") + " user=" + os.getenv("POSTGRES_USERNAME") + " host=" + os.getenv("POSTGRES_ADDRESS") + " port=" + os.getenv("POSTGRES_PORT") + " password=" + os.getenv("POSTGRES_PASSWORD")
+db_pool = ThreadSafeConnectionPool(minconn=4, dsn=dsn)
 
 
 def transformToListofDict(cursorResult):
@@ -29,7 +25,7 @@ def transformToListofDict(cursorResult):
 
 def getFromOptionsTable(questionnaireId, questionId):
   try:
-    conn = connect()
+    conn = db_pool.getconn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute('''select * from options where questionnaire_id = %s
 AND question_id = %s''', (questionnaireId, questionId))
@@ -43,11 +39,11 @@ AND question_id = %s''', (questionnaireId, questionId))
   finally:
     if conn:
       cur.close()
-      conn.close()
+      db_pool.putconn(conn)
 
 def getFromQuestionTable(questionnaireId, questionId):
   try:
-    conn = connect()
+    conn = db_pool.getconn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute('''select * from questions where questionnaire_id = %s
 AND question_id = %s''', (questionnaireId, questionId))
@@ -61,5 +57,5 @@ AND question_id = %s''', (questionnaireId, questionId))
   finally:
     if conn:
       cur.close()
-      conn.close()
+      db_pool.putconn(conn)
 

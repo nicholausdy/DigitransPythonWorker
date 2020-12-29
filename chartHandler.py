@@ -54,7 +54,7 @@ def renderPie(chartInfoObject):
     filenameQuestionnairePart =filenameQuestionnairePart.replace(".","")
     filenameQuestionPart = str(chartInfoObject['optionInfo'][i]['question_id'])
     directory = os.getenv("CHART_DIR") + 'chart-' + filenameQuestionnairePart + '-' + filenameQuestionPart + '.svg'
-    pie_chart.render_to_file(directory, force_uri_protocol='https')
+    pie_chart.render_to_file(directory, force_uri_protocol='http')
     return directory
   except Exception as error:
     print(error)

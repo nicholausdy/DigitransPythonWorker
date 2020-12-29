@@ -47,6 +47,7 @@ def renderPie(chartInfoObject):
       tooltip_border_radius=0.5,
       style = custom_style)
     pie_chart.title = chartInfoObject['questionDesc']
+    pie_chart.force_uri_protocol = 'http' # correct render in browser
     for i in range(len(chartInfoObject['optionInfo'])):
       optionObj = chartInfoObject['optionInfo'][i]
       pie_chart.add(optionObj['description'], optionObj['number_chosen'])

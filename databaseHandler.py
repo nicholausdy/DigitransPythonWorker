@@ -59,3 +59,25 @@ AND question_id = %s''', (questionnaireId, questionId))
       cur.close()
       db_pool.putconn(conn)
 
+def getFromAnswersTableIndDep(questionnaireId, questionIdInd, questionIdDep):
+  try:
+    conn = db_pool.getconn()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute('''select A.answerer_email, A.option_id as ind_option, B.option_id as dep_option  from answers as A inner join answers as B 
+on A.answerer_email = B.answerer_email
+where A.questionnaire_id = %s
+AND B.questionnaire_id = %s
+AND A.question_id = %s
+AND B.question_id = %s''', (questionnaireId, questionnaireId, questionIdInd, questionIdDep))
+    cursorResult = cur.fetchall()
+    if (not(cursorResult)):
+      raise Exception('Empty record')
+    return transformToListofDict(cursorResult)
+  except Exception as error:
+    print(error)
+    raise Exception('Failed getting result')
+  finally:
+    if conn:
+      cur.close()
+      db_pool.putconn(conn)
+

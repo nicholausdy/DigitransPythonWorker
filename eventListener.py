@@ -4,6 +4,7 @@ from nats.aio.client import Client as NATS
 from nats.aio.errors import ErrConnectionClosed, ErrTimeout, ErrNoServers 
 
 from chartHandler import asyncRenderHandler
+from statisticHandler import createChiSquaredStatistic
 
 import os
 from pathlib import Path
@@ -28,7 +29,18 @@ async def runEventListener(loop):
       except (ErrConnectionClosed, ErrTimeout, ErrNoServers) as error:
         raise Exception(error)   
 
+    async def stat_handler(msg):
+      try:
+        reply = msg.reply
+        data = json.loads(msg.data.decode())
+        procResult = await createChiSquaredStatistic(data['questionnaire_id'], data['ind_question_id'], data['dep_question_id'])
+        await nc.publish(reply, json.dumps(procResult).encode())
+      except (ErrConnectionClosed, ErrTimeout, ErrNoServers) as error:
+        raise Exception(error)   
+
     chartRequestListener = await nc.subscribe("chartCall", "chart.workers", chart_handler)
+    statRequestListener = await nc.subscribe("statisticCall", "stat.workers", stat_handler)
+    
   except Exception as error:
     print(error)
 

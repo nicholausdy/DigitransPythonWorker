@@ -66,7 +66,7 @@ def renderBar(chartInfoObject):
     custom_style = Style(
       title_font_size=2,
       legend_font_size=2,
-      tooltip_font_size=2   #hover element
+      tooltip_font_size=1   #hover element
     )
     bar_chart = pygal.Bar(
       width=110, 

@@ -66,9 +66,39 @@ def renderBar(chartInfoObject):
     custom_style = Style(
       title_font_size=2,
       legend_font_size=2,
-      tooltip_font_size=1   #hover element
+      tooltip_font_size=2   #hover element
     )
     bar_chart = pygal.Bar(
+      width=110, 
+      height=70, 
+      margin_top=3,
+      spacing = 7,
+      legend_box_size=1, 
+      tooltip_border_radius=0.5,
+      style = custom_style)
+    bar_chart.title = chartInfoObject['questionDesc']
+    for i in range(len(chartInfoObject['optionInfo'])):
+      optionObj = chartInfoObject['optionInfo'][i]
+      bar_chart.add(optionObj['description'], optionObj['number_chosen'])
+    filenameQuestionnairePart = chartInfoObject['optionInfo'][i]['questionnaire_id'].replace("/","")
+    filenameQuestionnairePart =filenameQuestionnairePart.replace(".","")
+    filenameQuestionPart = str(chartInfoObject['optionInfo'][i]['question_id'])
+    directory = os.getenv("CHART_DIR") + 'chart-' + filenameQuestionnairePart + '-' + filenameQuestionPart + '.svg'
+    bar_chart.render_to_file(directory, force_uri_protocol='http')
+    return directory
+  except Exception as error:
+    print(error)
+    raise Exception(error)
+
+def renderHorizontalBar(chartInfoObject):
+      try:
+    # styling
+    custom_style = Style(
+      title_font_size=2,
+      legend_font_size=2,
+      tooltip_font_size=2   #hover element
+    )
+    bar_chart = pygal.HorizontalBar(
       width=110, 
       height=70, 
       margin_top=3,
@@ -94,7 +124,8 @@ def chartSelector(chartInfoObject, chartType):
   try:
     dictSelector = {
       "pie": renderPie,
-      "bar": renderBar
+      "bar": renderBar,
+      "h_bar": renderHorizontalBar,
     }
     directory = dictSelector[chartType](chartInfoObject)
     return directory

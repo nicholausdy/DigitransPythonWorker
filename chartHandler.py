@@ -91,7 +91,7 @@ def renderBar(chartInfoObject):
     raise Exception(error)
 
 def renderHorizontalBar(chartInfoObject):
-      try:
+  try:
     # styling
     custom_style = Style(
       title_font_size=2,

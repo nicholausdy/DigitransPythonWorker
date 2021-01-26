@@ -76,7 +76,7 @@ def renderBar(chartInfoObject):
       legend_box_size=1, 
       tooltip_border_radius=0.5,
       style = custom_style,
-      label_font_size = 0.5)
+      value_font_size = 0.5)
     bar_chart.title = chartInfoObject['questionDesc']
     for i in range(len(chartInfoObject['optionInfo'])):
       optionObj = chartInfoObject['optionInfo'][i]
@@ -107,7 +107,7 @@ def renderHorizontalBar(chartInfoObject):
       legend_box_size=1, 
       tooltip_border_radius=0.5,
       style = custom_style,
-      label_font_size = 0.5)
+      value_font_size = 0.5)
     bar_chart.title = chartInfoObject['questionDesc']
     for i in range(len(chartInfoObject['optionInfo'])):
       optionObj = chartInfoObject['optionInfo'][i]

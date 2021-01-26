@@ -24,7 +24,7 @@ async def runEventListener(loop):
       try:
         reply = msg.reply
         data = json.loads(msg.data.decode())
-        procResult = await asyncRenderHandler(data['questionnaire_id'], data['question_id'])
+        procResult = await asyncRenderHandler(data['questionnaire_id'], data['question_id'], data['chart_type'])
         await nc.publish(reply, json.dumps(procResult).encode())
       except (ErrConnectionClosed, ErrTimeout, ErrNoServers) as error:
         raise Exception(error)   

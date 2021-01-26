@@ -66,7 +66,8 @@ def renderBar(chartInfoObject):
     custom_style = Style(
       title_font_size=2,
       legend_font_size=2,
-      tooltip_font_size=0.5   #hover element
+      tooltip_font_size=2,
+      value_font_size=1   #hover element
     )
     bar_chart = pygal.Bar(
       width=110, 
@@ -96,7 +97,8 @@ def renderHorizontalBar(chartInfoObject):
     custom_style = Style(
       title_font_size=2,
       legend_font_size=2,
-      tooltip_font_size=0.5   #hover element
+      tooltip_font_size=2 ,
+      value_font_size=1  #hover element
     )
     bar_chart = pygal.HorizontalBar(
       width=110, 

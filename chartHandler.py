@@ -63,20 +63,7 @@ def renderPie(chartInfoObject):
 def renderBar(chartInfoObject):
   try:
     # styling
-    custom_style = Style(
-      title_font_size=2,
-      legend_font_size=2,
-      tooltip_font_size=2,
-      value_font_size=1   #hover element
-    )
-    bar_chart = pygal.Bar(
-      width=110, 
-      height=70, 
-      margin_top=3,
-      spacing = 7,
-      legend_box_size=1, 
-      tooltip_border_radius=0.5,
-      style = custom_style)
+    bar_chart = pygal.Bar()
     bar_chart.title = chartInfoObject['questionDesc']
     for i in range(len(chartInfoObject['optionInfo'])):
       optionObj = chartInfoObject['optionInfo'][i]
@@ -94,20 +81,7 @@ def renderBar(chartInfoObject):
 def renderHorizontalBar(chartInfoObject):
   try:
     # styling
-    custom_style = Style(
-      title_font_size=2,
-      legend_font_size=2,
-      tooltip_font_size=2 ,
-      value_font_size=1  #hover element
-    )
-    bar_chart = pygal.HorizontalBar(
-      width=110, 
-      height=70, 
-      margin_top=3,
-      spacing = 7,
-      legend_box_size=1, 
-      tooltip_border_radius=0.5,
-      style = custom_style)
+    bar_chart = pygal.HorizontalBar()
     bar_chart.title = chartInfoObject['questionDesc']
     for i in range(len(chartInfoObject['optionInfo'])):
       optionObj = chartInfoObject['optionInfo'][i]

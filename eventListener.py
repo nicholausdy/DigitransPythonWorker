@@ -33,7 +33,7 @@ async def runEventListener(loop):
       try:
         reply = msg.reply
         data = json.loads(msg.data.decode())
-        procResult = await createChiSquaredStatistic(data['questionnaire_id'], data['ind_question_id'], data['dep_question_id'])
+        procResult = await createChiSquaredStatistic(data['questionnaire_id'], data['ind_question_id'], data['dep_question_id'], data['confidence_interval'])
         await nc.publish(reply, json.dumps(procResult).encode())
       except (ErrConnectionClosed, ErrTimeout, ErrNoServers) as error:
         raise Exception(error)   

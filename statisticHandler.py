@@ -92,7 +92,7 @@ async def calculateChiSquared(questionnaireId, questionIdInd, questionIdDep):
       raise Exception('Jumlah sampel kurang banyak')
     raise Exception(e.args[0])
   
-async def createChiSquaredStatistic(questionnaireId, questionIdInd, questionIdDep):
+async def createChiSquaredStatistic(questionnaireId, questionIdInd, questionIdDep, confInterval):
   try:
     result = {}
     result['detail'] = {}
@@ -106,8 +106,8 @@ async def createChiSquaredStatistic(questionnaireId, questionIdInd, questionIdDe
     else:
       result['detail']['validity'] = 'Hasil valid'
     
-    
-    if (chiSquaredStat['p'] < 0.05):
+    p_test = 1 - confInterval
+    if (chiSquaredStat['p'] < p_test):
       result['message'] = 'Kedua variabel MUNGKIN BERHUBUNGAN'
     else:
       result['message'] = 'Kedua variabel TIDAK BERHUBUNGAN'

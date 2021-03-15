@@ -48,7 +48,7 @@ async def saveAnswersAsSpreadsheet(questionnaireId, spreadSheetFormat):
   try:
     answersDataFrame = await createAnswersDataFrame(questionnaireId)
     selector = {
-      "xls": saveDataFrameAsXls,
+      "xlsx": saveDataFrameAsXls,
       "csv": saveDataFrameAsCSV
     }
     directory = await asyncTransform(selector[spreadSheetFormat], questionnaireId, answersDataFrame)

@@ -81,3 +81,21 @@ AND B.question_id = %s''', (questionnaireId, questionnaireId, questionIdInd, que
       cur.close()
       db_pool.putconn(conn)
 
+def getFromAnswersTable(questionnaireId):
+  try:
+    conn = db_pool.getconn()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute('''select * from answers where questionnaire_id = %s 
+ORDER BY question_id''', (questionnaireId,))
+    cursorResult = cur.fetchall()
+    if (not(cursorResult)):
+      raise Exception('Empty record')
+    return transformToListofDict(cursorResult)
+  except Exception as error:
+    print(error)
+    raise Exception('Failed getting result')
+  finally:
+    if conn:
+      cur.close()
+      db_pool.putconn(conn)
+

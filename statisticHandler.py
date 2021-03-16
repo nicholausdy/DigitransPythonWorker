@@ -1,3 +1,4 @@
+from math import ceil
 from scipy.stats import chi2_contingency
 
 import asyncio
@@ -116,9 +117,46 @@ async def createChiSquaredStatistic(questionnaireId, questionIdInd, questionIdDe
   
   except Exception as e:
     return {'success': False, 'message': e.args[0]}
+
+async def getZValue(conf_level):
+  try:
+    zValueDict = {
+      0.8: 1.28,
+      0.9: 1.645,
+      0.95: 1.96,
+      0.98: 2.33,
+      0.99: 2.58
+    }
+    return zValueDict[conf_level]
+  
+  except Exception as e:
+    raise Exception(e.args[0])
+
+async def intermediateResCalc(conf_level, error_margin, sample_prop):
+  try:
+    # calculate (Z^2 * p * (1-p)) / e^2
+    # assume p (sample_proportion) = 0.5
+    z_value = await getZValue(conf_level)
+    result = ((z_value**2) * sample_prop * (1 - sample_prop)) / (error_margin**2)
+    return result
+  
+  except Exception as e:
+    raise Exception(e.args[0])
+
+async def calculateSampleSize(pop, conf_level, error_margin, sample_prop = 0.5):
+  try:
+    intermediate_res = await intermediateResCalc(conf_level, error_margin, sample_prop)
+    sample_size = (pop * intermediate_res) / (pop - 1 + intermediate_res)
+    return {'success': True, 'message': ceil(sample_size)}
+
+  except Exception as e:
+    return {'success': False, 'message': e.args[0]}
+
+
     
 # async def main():
-#   res = await createChiSquaredStatistic('$2b$10$WzUzmKnkqOW6OrG.I1Mxz.me/Y9xTiANzzbr6FovVL7jJFJbCLepW', 2, 3)
+#   # res = await createChiSquaredStatistic('$2b$10$WzUzmKnkqOW6OrG.I1Mxz.me/Y9xTiANzzbr6FovVL7jJFJbCLepW', 2, 3)
+#   res = await calculateSampleSize(20000, 0.99, 0.05)
 #   print(res)
 
 # loop = asyncio.get_event_loop()

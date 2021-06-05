@@ -1,6 +1,9 @@
 from math import ceil
 from scipy.stats import chi2_contingency
 
+import numpy as np
+import pandas as pd
+
 import asyncio
 from asyncHandler import asyncTransform 
 
@@ -152,11 +155,108 @@ async def calculateSampleSize(pop, conf_level, error_margin, sample_prop = 0.5):
   except Exception as e:
     return {'success': False, 'message': e.args[0]}
 
+async def initializeScoreDict(questionnaireID, listOfQuestionID):
+  try:
+    scoresFromDB = await asyncTransform(databaseHandler.getQuestionsOptionsScoresForSelectedQuestions, questionnaireID, listOfQuestionID)
+    dictResult = {}
+    for i in range(len(scoresFromDB)):
+      key1 = scoresFromDB[i]['question_id']
+      key2 = scoresFromDB[i]['option_id']
+      value = scoresFromDB[i]['score']
 
+      if key1 not in dictResult:
+        dictResult[key1] = {}
+
+      dictResult[key1][key2] = value
+
+    return dictResult
+
+  except Exception as e:
+    raise Exception(e.args[0])
+
+async def createInputDictForCov(questionnareID, listOfQuestionID):
+  try:
+    scoreDict = await initializeScoreDict(questionnareID, listOfQuestionID)
+    dictResult = {}
+    for i in range(len(listOfQuestionID)):
+      key = listOfQuestionID[i]
+      dictResult[key] = []
+
+    answersFromDB = await asyncTransform(databaseHandler.getAnswersForSelectedQuestions, questionnareID, listOfQuestionID)
+    for i in range(len(answersFromDB)):
+      key1 = answersFromDB[i]['question_id']
+      key2 = answersFromDB[i]['option_id'][0]
+      score = scoreDict[key1][key2]
+      dictResult[key1].append(score)
+
+    return dictResult 
+
+  except Exception as e:
+    raise Exception(e.args[0])
+
+async def createCovMatrix(questionnaireID, listOfQuestionID):
+  try:
+    # create correlation matrix from dict containing list of scores for each questions
+    inputDictForCov = await createInputDictForCov(questionnaireID, listOfQuestionID)
+    df = await asyncTransform(pd.DataFrame, inputDictForCov)
+    covMatrix = await asyncTransform(df.cov)
+    return covMatrix
+
+  except Exception as e:
+    raise Exception(e.args[0])
+
+async def calculateCovMeanAndVarMean(questionnareID, listOfQuestionID):
+  try:
+    covMatrix = await createCovMatrix(questionnareID, listOfQuestionID)
+    listOfVar = []
+    for i in range(len(listOfQuestionID)):
+      variance = covMatrix.at[listOfQuestionID[i], listOfQuestionID[i]]
+      listOfVar.append(variance)
+      covMatrix.at[listOfQuestionID[i], listOfQuestionID[i]] = np.NaN
+
+    mean_var = await asyncTransform(np.mean, listOfVar)
+    mean_covs_cols = await asyncTransform(covMatrix.mean)
+    mean_covs = await asyncTransform(mean_covs_cols.mean)
+    return mean_var, mean_covs
+
+  except Exception as e:
+    raise Exception(e.args[0])
+
+async def calculateCronbachAlpha(questionnaireID, listOfQuestionID):
+  try:
+    n = len(listOfQuestionID)
+    mean_var, mean_covs = await calculateCovMeanAndVarMean(questionnaireID, listOfQuestionID)
+    cronbach_alpha = (n * mean_covs) / (mean_var + (n-1) * mean_covs)
+    cronbach_alpha = round(cronbach_alpha, 2)
+    consistency = await cronbachConsistency(cronbach_alpha)
+    return {'success': True, 'message':{'cronbach_alpha': cronbach_alpha, 'consistency': consistency}}
+
+  except Exception as e:
+    return {'success': False, 'message': e.args[0]}
+  
     
+async def cronbachConsistency(cronbach_alpha):
+  try:
+    if (cronbach_alpha >= 0.9):
+      return 'Sangat Baik / Excellent'
+    elif ((cronbach_alpha >= 0.8) and (cronbach_alpha < 0.9)):
+      return 'Baik / Good'
+    elif ((cronbach_alpha >= 0.7) and (cronbach_alpha < 0.8)):
+      return 'Dapat diterima / Acceptable'
+    elif ((cronbach_alpha >=0.6) and (cronbach_alpha < 0.7)):
+      return 'Dipertanyakan / Questionable'
+    elif ((cronbach_alpha >=0.5) and (cronbach_alpha < 0.6)):
+      return 'Buruk / Poor'
+    else:
+      return 'Tidak bisa diterima / Unacceptable'
+
+  except Exception as e:
+    raise Exception(e.args[0])
+
 # async def main():
 #   # res = await createChiSquaredStatistic('$2b$10$WzUzmKnkqOW6OrG.I1Mxz.me/Y9xTiANzzbr6FovVL7jJFJbCLepW', 2, 3)
-#   res = await calculateSampleSize(20000, 0.99, 0.05)
+#   # res = await calculateSampleSize(20000, 0.99, 0.05)
+#   res = await calculateCronbachAlpha('$2b$10$WzUzmKnkqOW6OrG.I1Mxz.me/Y9xTiANzzbr6FovVL7jJFJbCLepW',[3,4,5,6,7])
 #   print(res)
 
 # loop = asyncio.get_event_loop()

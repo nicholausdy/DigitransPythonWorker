@@ -232,7 +232,7 @@ async def calculateCronbachAlpha(questionnaireID, listOfQuestionID):
     return {'success': True, 'message':{'cronbach_alpha': cronbach_alpha, 'consistency': consistency}}
 
   except Exception as e:
-    return {'success': False, 'message': e.args[0]}
+    return {'success': False, 'message': 'Kalkulasi gagal. Pastikan semua responden menjawab semua pertanyaan yang dimasukkan (tidak ada jawaban kosong) serta dimasukkan lebih dari 1 pertanyaan'}
   
     
 async def cronbachConsistency(cronbach_alpha):
